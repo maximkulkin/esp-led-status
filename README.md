@@ -14,13 +14,17 @@ led_status_pattern_t waiting_wifi = { 2, { 1000, 1000 } };
 led_status_pattern_t normal_mode = { 2, { 100, 2900 } };
 
 // three short blinks
-led_status_pattern_t two_short_blinks = { 6, {100, 100, 100, 100, 100, 700} };
+led_status_pattern_t three_short_blinks = { 6, {100, 100, 100, 100, 100, 700} };
 
 
 #define STATUS_LED_PIN 13
 
 static led_status_t status = led_status_init(STATUS_LED_PIN);
-led_status_set(status, normal_mode);
+
+// normal_mode repeated indefinitely
+led_status_set(status, &normal_mode, -1);
+// three_short_blinks repeated twice
+led_status_set(status, &three_short_blinks, 2);
 ```
 
 License
