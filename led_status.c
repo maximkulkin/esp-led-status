@@ -44,7 +44,7 @@ void led_status_done(led_status_t *status) {
     free(status);
 }
 
-void led_status_set(led_status_t *status, led_status_pattern_t *pattern, int loops) {
+void led_status_set_repeat(led_status_t *status, led_status_pattern_t *pattern, int loops) {
     if (!pattern || pattern->n == 0 || loops == 0) {
         sdk_os_timer_disarm(&status->timer);
         return;
@@ -57,4 +57,8 @@ void led_status_set(led_status_t *status, led_status_pattern_t *pattern, int loo
     status->n = 0;
 
     led_status_tick(status);
+}
+
+void led_status_set(led_status_t *status, led_status_pattern_t *pattern) {
+    led_status_set_repeat(status, pattern, -1);
 }

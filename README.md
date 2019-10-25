@@ -22,9 +22,9 @@ led_status_pattern_t three_short_blinks = { 6, {100, 100, 100, 100, 100, 700} };
 static led_status_t status = led_status_init(STATUS_LED_PIN);
 
 // normal_mode repeated indefinitely
-led_status_set(status, &normal_mode, -1);
+led_status_set(status, &normal_mode);
 // three_short_blinks repeated twice
-led_status_set(status, &three_short_blinks, 2);
+led_status_set_repeat(status, &three_short_blinks, 2);
 ```
 
 License
