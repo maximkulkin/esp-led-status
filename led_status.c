@@ -12,6 +12,7 @@ typedef struct {
     led_status_pattern_t *pattern;
     bool state;
     int n;
+    int ticks;
 } led_status_t;
 
 
@@ -21,7 +22,10 @@ static void led_status_tick(led_status_t *status) {
 
     gpio_write(status->gpio, status->state);
 
-    sdk_os_timer_arm(&status->timer, status->pattern->delay[status->n], 0);
+    if (status->ticks != 0) {
+        status->ticks = status->ticks - 1;
+        sdk_os_timer_arm(&status->timer, status->pattern->delay[status->n], 0);   
+    }
 }
 
 led_status_t *led_status_init(int gpio) {
@@ -40,16 +44,21 @@ void led_status_done(led_status_t *status) {
     free(status);
 }
 
-void led_status_set(led_status_t *status, led_status_pattern_t *pattern) {
-    if (!pattern || pattern->n == 0) {
+void led_status_set_repeat(led_status_t *status, led_status_pattern_t *pattern, int loops) {
+    if (!pattern || pattern->n == 0 || loops == 0) {
         sdk_os_timer_disarm(&status->timer);
         return;
     }
 
     status->pattern = pattern;
+    status->ticks = loops*pattern->n;
 
     status->state = false;
     status->n = 0;
 
     led_status_tick(status);
+}
+
+void led_status_set(led_status_t *status, led_status_pattern_t *pattern) {
+    led_status_set_repeat(status, pattern, -1);
 }
